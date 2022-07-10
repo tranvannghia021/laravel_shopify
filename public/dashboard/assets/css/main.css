@@ -1,0 +1,236 @@
+:root{
+    --height-message:86px;
+    --height-message-header:30px;
+    
+
+}
+
+.custom_message{
+    width: 100%;
+    height: 40px;
+    
+    text-align: center;
+    border-radius: 2.5px;
+}
+.text-message{
+    line-height: 40px;
+}
+.custom_message.message-success{
+    color: #155724;
+    background-color: #00bc8c;
+    border-color: #00a379;
+}
+.custom_message.message-error{
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.form-message{
+    font-size: 13px;
+    color: red;
+}
+.custom-img{
+    width: 100px;
+}
+/* show products */
+.img_top{
+    width: 100%;
+}
+.img_big{
+    width: 80%;
+    height: auto;
+    max-height: 90%;
+    margin-bottom: 10px;
+}
+.img_sub{
+    height: 100px;
+    width:80%;
+    overflow: hidden;
+    overflow-x:scroll;
+    
+}
+.img_sub_overfolw{
+    
+    display: flex;
+   
+}
+.div_bottom{
+    width: auto;
+    margin-right: 10px;
+    
+    cursor: pointer;
+}
+
+.div_bottom-img{
+    object-fit: cover;
+    width:100%;
+    height: auto;
+    max-height: 100px;
+    
+}
+.div_right{
+    width: 100%;
+    height: 100%;
+}
+.div_right-top{
+    width: 100%;
+    height: 60%;
+}
+.div_right-bottom{
+    width: 100%;
+    height: 40%;
+}.background_show{
+    background-color: #fff;
+    box-shadow: 5px 10px #888888;
+    padding: 10px;
+}
+.div_right-bottom p {
+    margin-left: 20px;
+}
+/* message
+
+/* toast */
+.message{
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 2px;
+    border-left: 4px solid;
+    box-shadow:  0 2px 4px rgba(0, 0, 0, 0.08);
+    padding: 8px 0;
+    width: 300px;
+    transition: all linear 0.3s;
+ 
+}
+@keyframes animation{
+    from{
+        opacity: 0;
+        transform: translateX(calc(100% + 20px));
+    } 
+    to{
+        opacity: 1;
+        transform: translateX(0);
+
+    }
+}
+@keyframes animationFadeout{
+    to{
+        opacity: 0;
+    }
+}
+.message + .message {
+    margin-top: 14px;
+}
+.message__icon{
+    font-size: 20px;
+}
+
+.message__body{
+    flex: 1;
+}
+.message__title{
+    margin-bottom: 0;
+    font-size: 18px;
+    font-weight: 600;
+    
+}
+.message__message{
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #777;
+}
+.message__icon,
+.message__close{
+    padding: 0 16px;
+}
+.message__close{
+    font-size: 16px;
+    color:rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+.message__close:hover{
+    color: #000;
+}
+.toast--message-success{
+    border-color: #28a745;
+}
+.toast--message-success .message__icon{
+    color:#28a745 ;
+}
+.toast--message-error{
+    border-color: #dc3545;
+
+}
+.toast--message-error .message__icon{
+    color: #dc3545;
+}
+.toast__message-custom{
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    z-index: 5;
+}
+/* crawl */
+
+.father{
+    display: flex;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    box-shadow: 0 2px 3px #ccc;
+    height: 200px;
+}
+.father + .father{
+    margin-top: 5px;
+}
+.father__thumb{
+    width: 300px;
+    padding: 5px;
+}
+.father__img{
+    width:250px;
+}
+.father__content{
+    margin-left: 5px;
+    padding: 10px;
+    
+}
+.father__title a {
+    color: #000;
+    
+}
+.father__body a {
+    
+    color: #777;
+}
+.paginate_post{
+    margin: 20px 0;
+
+    display: flex;
+    justify-content: end;
+}
+.icon_btn{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px;
+}
+.icon_btn a{
+    margin-left: 5px;
+}
+.status_post{
+    position: absolute;
+    top:0;
+    right: 0;
+    padding: 5px;
+    font-size: 13px;
+    display: flex;
+}
+.status_post  p{
+    background-color: aqua;
+    padding: 2px;
+    border-radius: 5px;
+
+}

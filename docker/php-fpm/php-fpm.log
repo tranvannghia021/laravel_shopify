@@ -1,0 +1,6 @@
+[09-Jul-2022 15:10:02] NOTICE: fpm is running, pid 18
+[09-Jul-2022 15:10:02] NOTICE: ready to handle connections
+[09-Jul-2022 15:10:02] NOTICE: systemd monitor interval set to 10000ms
+[09-Jul-2022 15:11:16] WARNING: [pool www] server reached pm.max_children setting (4), consider raising it
+[09-Jul-2022 16:45:51] WARNING: [pool www] child 24 said into stderr: "NOTICE: PHP message: PHP Warning:  Unexpected character in input:  '' (ASCII=29) state=0 in /var/www/html/routes/web.php on line 147"
+[09-Jul-2022 16:45:51] WARNING: [pool www] child 24 said into stderr: "NOTICE: PHP message: PHP Warning:  Unexpected character in input:  '' (ASCII=31) state=0 in /var/www/html/routes/web.php on line 147"
