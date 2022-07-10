@@ -39,5 +39,14 @@ php artisan storage:link
 - run: php artisan schedule:work (cào bài báo từ dân trí vô hạn: 1 lần cào/1h)
 ## http://localhost:8000/admin (trang quản trị)
 ## http://localhost:8000(trang bài post)
-
+---------
+## app đồng bộ 2 bên shopify và app
+- tại đây là bản local nên không có domain
+- dùng ngrok để tạo domain ảo(nếu có domain thật thì áp vào là dc)
+- trong file env có biến DOMAIN_NGORK ta bỏ domain vào đó
+- thay domain vào trong app settup của account partners.shopify.com
+- run domain/shopify/install
+- nếu shopify k cho install link qua app thì phải login vào accounnt partners để install trong select store
+- vì đây là bản chưa publish nên dùng account store của partner test
+- account store có hai acc: nghia132 và testvip123
 
