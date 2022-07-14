@@ -10,7 +10,7 @@ use App\Repositories\Services\AccountShopifyService;
 use App\Repositories\Services\ProductShopifyService;
 use App\Repositories\Services\WebhookService;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
@@ -127,50 +127,57 @@ class LoginController extends Controller
     }
     public function getData(Request $request)
     {
+    
         // array các quyền webhook
         $topicCreate = ['products/create','inventory_items/create','locations/create'];
         $topicUpdate = ['products/update','inventory_items/update','locations/update'];
         $topicDelete=['products/delete','inventory_items/delete','locations/delete'];
         // code ,hmac trả về
-        $code = $request->input('code');
-        $hmac = $request->input('code');
-        $shop = $request->input('shop');
-        $isChechLogin = $this->shopifyMysql->findByShop($shop);
-        if (!is_null($isChechLogin)) {
-            $request->session()->flush();
-            $request->session()->put("merchan_id", $isChechLogin->id);
-            $this->getProductShop($isChechLogin->id);
-            return redirect()->route('admin.dashboard');
-        } else {
-            /// xin access_token
-            $token=$this->accountShopifyService->getAccessToken($shop,$code);
-            // xin thông tin shop
-            $responseShop =$this->accountShopifyService->getInfoShop($token,$shop);
-            // lưu db
-            $result = $this->shopifyMysql->create($responseShop->json('shop'), $token);
+        $isCheckHmac=$this->verifyHmacAuthen($request);
+        if($isCheckHmac){
 
-
-            if ($result == -1) {
-                return redirect()->route('shopify.index')->with('message', 'Có lỗi,Vui lòng thử lại');
-            } else {
-                //xin quyền webhook
-                $numberRole=$this->webhookService->countRole($token,$shop);
-
-                if ($numberRole == 0) {
-                    $this->webhookService->create($shop,$token,$topicCreate,$topicUpdate,$topicDelete);
-                }
-                $this->getProductShop($result);
+            $code = $request->input('code');
+            $shop = $request->input('shop');
+            $isChechLogin = $this->shopifyMysql->findByShop($shop);
+            if (!is_null($isChechLogin)) {
                 $request->session()->flush();
-                $request->session()->put("merchan_id", $result);
-
+                $request->session()->put("merchan_id", $isChechLogin->id);
+                $this->getProductShop($isChechLogin->id);
                 return redirect()->route('admin.dashboard');
+            } else {
+                /// xin access_token
+                $token=$this->accountShopifyService->getAccessToken($shop,$code);
+                // xin thông tin shop
+                $responseShop =$this->accountShopifyService->getInfoShop($token,$shop);
+                // lưu db
+                $result = $this->shopifyMysql->create($responseShop->json('shop'), $token);
+               
+    
+                if ($result == -1) {
+                    return redirect()->route('shopify.index')->with('message', 'Có lỗi,Vui lòng thử lại');
+                } else {
+                    //xin quyền webhook
+                    $numberRole=$this->webhookService->countRole($token,$shop);
+    
+                    if ($numberRole == 0) {
+                        $this->webhookService->create($shop,$token,$topicCreate,$topicUpdate,$topicDelete);
+                    }
+                    $this->getProductShop($result);
+                    $request->session()->flush();
+                    $request->session()->put("merchan_id", $result);
+    
+                    return redirect()->route('admin.dashboard');
+                }
             }
+        }else{
+            return  redirect()->route('shopify.index')->with('message', 'Có lỗi,Vui lòng thử lại');
         }
     }
     
     public function getProductShop($id){
         
             $shopifys=$this->shopifyMysql->findById($id);
+         
             if($shopifys->get_data == 'no'){
                $datas= $this->productShopifyService->getAll($shopifys->access_token,$shopifys->domain);
                
@@ -178,5 +185,24 @@ class LoginController extends Controller
             }
         
     }
+    public function verifyHmacAuthen($request){
+        $queryString = http_build_query(array(
+                    'code' => $request->input('code'),
+                    'host' => $request->input('host'),
+                    'shop' => $request->input('shop'),
+                    'timestamp' => $request->input('timestamp'),
+                ));
+    
+        $hmacShopify = $request->input('hmac');
+    
+        $hmacApp = hash_hmac('sha256', $queryString, env('API_SECRET_KEY_SHOPIFY_APP'));
+    
+        if($hmacShopify === $hmacApp){
+            return true;
+        }
+    
+        return false;
+    }
+    
     
 }

@@ -19,7 +19,7 @@ class ProductController extends Controller
     protected $product_shopify_detail;
     protected $product_shopify_service;
     protected $account_shopify;
-    
+
 
     public function __construct(
         ProductShopifyMysql $product_shopify,
@@ -42,8 +42,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $id=Session::get('merchan_id');
-        $accounts=$this->account_shopify->findById($id);
+        $id = Session::get('merchan_id');
+        $accounts = $this->account_shopify->findById($id);
         $products = $this->product_shopify->getAll($accounts->name);
 
         return view('admin.product-shopify.list', compact('products'));
@@ -67,7 +67,7 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-      
+
         for ($i = 0; $i < $request->input('total'); $i++) {
             $result = $this->isCheckFile($request, 'images_' . $i . '');
             if (!$result) {
@@ -77,14 +77,14 @@ class ProductController extends Controller
                 ]);
             }
         }
-        $id=Session::get('merchan_id');
-        $accounts=$this->account_shopify->findById($id);
+        $id = Session::get('merchan_id');
+        $accounts = $this->account_shopify->findById($id);
         // lưu lên api shopify
-        $data_product=$this->product_shopify_service->create($accounts->access_token,$accounts->domain,$accounts->vendor,$request);
-    
+        $data_product = $this->product_shopify_service->create($accounts->access_token, $accounts->domain, $accounts->vendor, $request);
+
         // lưu vào db
-        
-        $result_product = $this->product_shopify->insertDB($request,$data_product);
+
+        $result_product = $this->product_shopify->insertDB($request, $data_product);
         if ($result_product) {
             return redirect(route('shopify.product.list'))->with([
                 'class' => 'message-success',
@@ -130,13 +130,13 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $accounts=$this->account_shopify->findById(Session::get('merchan_id'));
-        $products=$this->product_shopify->getId($id);
-          // cập nhập sản phẩm api
-        $this->product_shopify_service->update($accounts,$request,$products->id_shopify);
+        $accounts = $this->account_shopify->findById(Session::get('merchan_id'));
+        $products = $this->product_shopify->getId($id);
+        // cập nhập sản phẩm api
+        $this->product_shopify_service->update($accounts, $request, $products->id_shopify);
         for ($i = 0; $i < $request->input('total'); $i++) {
-            
-            
+
+
             if ($request->hasFile('images_' . $i)) {
                 $result = $this->isCheckFile($request, 'images_' . $i . '');
                 if (!$result) {
@@ -145,50 +145,47 @@ class ProductController extends Controller
                         'message' => 'Vui lòng kiểm tra lại files '
                     ]);
                 }
-                $nameImages=$request->file('images_'.$i.'')->getClientOriginalName();
-                
-                // cập nhập ảnh va api
-                $base64_images=base64_encode(file_get_contents($request->file('images_' . $i . '')->path()));
-                $result_images=$this->image_shopify->updateDB($accounts,$nameImages,$request->input('id_images_'.$i),$products->id_shopify,$base64_images);
-                
+                $nameImages = $request->file('images_' . $i . '')->getClientOriginalName();
 
-                if(!$result_images){
+                // cập nhập ảnh va api
+                $base64_images = base64_encode(file_get_contents($request->file('images_' . $i . '')->path()));
+                $result_images = $this->image_shopify->updateDB($accounts, $nameImages, $request->input('id_images_' . $i), $products->id_shopify, $base64_images);
+
+
+                if (!$result_images) {
                     return back()->with([
                         'class' => 'message-error',
                         'message' => 'Có lỗi,Đã có lỗi xảy ra chỗ hình ảnh! '
                     ]);
                 }
-                $request->file('images_'.$i.'')->storeAs('public/shopify',$request->file('images_'.$i.'')->getClientOriginalName());
-               
-            } 
-          
-            $productShopifyDetail=$this->product_shopify_detail->findByid($request->input('id_products_detail_'.$i));
+                $request->file('images_' . $i . '')->storeAs('public/shopify', $request->file('images_' . $i . '')->getClientOriginalName());
+            }
+
+            $productShopifyDetail = $this->product_shopify_detail->findByid($request->input('id_products_detail_' . $i));
             // update api
-           $this->product_shopify_service->updateVarianst($accounts,$request,$productShopifyDetail->id_shopify_detail,$i);
-            $result_detail=$this->product_shopify_detail->updateDB($request,$request->input('id_products_detail_'.$i),$i);
-            if(!$result_detail){
+            $this->product_shopify_service->updateVarianst($accounts, $request, $productShopifyDetail->id_shopify_detail, $i);
+            $result_detail = $this->product_shopify_detail->updateDB($request, $request->input('id_products_detail_' . $i), $i);
+            if (!$result_detail) {
                 return back()->with([
                     'class' => 'message-error',
                     'message' => 'Có lỗi,Đã có lỗi xảy ra chỗ varian! '
                 ]);
             }
-            
         }
         // cập nhập products
-        $result_product=$this->product_shopify->updateDB($request,$id);
-      
-        if(!$result_product){
+        $result_product = $this->product_shopify->updateDB($request, $id);
+
+        if (!$result_product) {
             return back()->with([
                 'class' => 'message-error',
                 'message' => 'Cập nhập không thành công! '
             ]);
-        }else{
+        } else {
             return redirect()->route('shopify.product.list')->with([
                 'class' => 'message-success',
                 'message' => 'Cập nhập thành công! '
             ]);
         }
-
     }
 
     /**
@@ -199,27 +196,26 @@ class ProductController extends Controller
      */
     public function destroy(Request $request)
     {
-        $isCheck=$this->product_shopify->getId($request->input('id'));
-        $products=$this->product_shopify->getId($request->input('id'));
-        $id=Session::get('merchan_id');
-        $accounts=$this->account_shopify->findById($id);
-        if(!is_null($isCheck)){
-            $result=$this->product_shopify->deleteDB($request->input('id'));
+        $isCheck = $this->product_shopify->getId($request->input('id'));
+        $products = $this->product_shopify->getId($request->input('id'));
+        $id = Session::get('merchan_id');
+        $accounts = $this->account_shopify->findById($id);
+        if (!is_null($isCheck)) {
+            $result = $this->product_shopify->deleteDB($request->input('id'));
             // xoas api
-            $this->product_shopify_service->delete($accounts,$products->id_shopify);
+            $this->product_shopify_service->delete($accounts, $products->id_shopify);
             // del api even
-            if($result){
+            if ($result) {
                 return redirect()->route('shopify.product.list')->with([
-                    'message'=>'Xóa thành công',
-                    'class'=>'message-success'
+                    'message' => 'Xóa thành công',
+                    'class' => 'message-success'
                 ]);
             }
         }
         return redirect()->route('shopify.product.list')->with([
-            'message'=>'Xóa không thành công',
-            'class'=>'message-error'
-         ]);
-
+            'message' => 'Xóa không thành công',
+            'class' => 'message-error'
+        ]);
     }
     public function isCheckFile($request, $namefile)
     {
@@ -241,7 +237,4 @@ class ProductController extends Controller
             return false;
         }
     }
-   
-    
-    
 }

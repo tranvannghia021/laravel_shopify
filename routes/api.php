@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('/webhook')->group(function(){
+Route::middleware(['verifyHmac'])->prefix('/webhook')->group(function(){
     Route::any('/create',[ApiWebhookController::class,'listenWebHookCreate']);
     // Route::any('/create',function(Request $request){
     //     dd($request->collect());

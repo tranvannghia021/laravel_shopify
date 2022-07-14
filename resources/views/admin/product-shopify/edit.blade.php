@@ -76,6 +76,7 @@
 
                 <div id="show_varians">
                    {!! \App\Helpers\Helper::showVarianEdit($products)!!}
+
                     
                 </div>
 

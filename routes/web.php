@@ -107,16 +107,6 @@ Route::middleware(['checkLoginAdmin'])->prefix('shopify')->group(function (){
 });
 
 
-Route::any('/test',function(){
 
-
-    $response = Http::withHeaders([
-        'X-Shopify-Access-Token' => 'shpua_8fab10168575b020a8eb2c04aa47f185',
-    ])->get('https://nghia132.myshopify.com/admin/api/2022-07/webhooks/count.json');
-
-$datas=$response->json('count');
-dd($datas);
-
-});
 
 

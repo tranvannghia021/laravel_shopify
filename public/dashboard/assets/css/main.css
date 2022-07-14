@@ -234,3 +234,8 @@
     border-radius: 5px;
 
 }
+.btn.disabled{
+    pointer-events: none;
+    cursor: not-allowed;
+   
+}
