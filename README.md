@@ -45,6 +45,7 @@ php artisan storage:link
 - dùng ngrok để tạo domain ảo(nếu có domain thật thì áp vào là dc)
 - trong file env có biến DOMAIN_NGORK ta bỏ domain vào đó
 - thay domain vào trong app settup của account partners.shopify.com
+- run php artisan queue:work (để nhận webhook)
 - run domain/shopify/install
 - nếu shopify k cho install link qua app thì phải login vào accounnt partners để install trong select store
 - vì đây là bản chưa publish nên dùng account store của partner test
